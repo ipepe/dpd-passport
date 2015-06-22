@@ -4,7 +4,9 @@ var Resource = require('deployd/lib/resource'),
     internalClient = require('deployd/lib/internal-client'),
     util = require('util'),
     url = require('url'),
-    debug = require('debug')('dpd-passport'),
+    debug = (function(){
+      console.log('dpd-passport_debug_console', arguments);
+    }),
 
     // Stetegies
     LocalStrategy = require('passport-local').Strategy,
@@ -201,7 +203,10 @@ AuthResource.prototype.initPassport = function() {
 
 var sendResponse = function(ctx, err, config) {
     var sessionData = ctx.session.data;
-    var returnUrl = (ctx.req.cookies && ctx.req.cookies.get('_passportReturnUrl')) || null;
+    if (ctx.req.cookies && ctx.req.cookies.get){
+      console.log("ctx.req.cookies (_passportReturnUrl)=", ctx.req.cookies.get('_passportReturnUrl'));
+    }
+    var returnUrl = (ctx.req.cookies && ctx.req.cookies.get('_passportReturnUrl')) || "https://waw.geohermes.com/user/myprofile";
 
     if(returnUrl) {
         var redirectURL = url.parse(returnUrl, true);
@@ -227,7 +232,7 @@ var sendResponse = function(ctx, err, config) {
             }
         }
 
-        var redirectURLString = '';
+        var redirectURLString = "https://waw.geohermes.com/user/myprofile";
         try {
             redirectURLString = url.format(redirectURL);
         } catch(ex) {
